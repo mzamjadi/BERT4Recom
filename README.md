@@ -1,2 +1,2 @@
 # BERT4Recom
-Running BERT for sequential recommendation system
+BERT for sequential recommendation system
