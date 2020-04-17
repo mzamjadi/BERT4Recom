@@ -1,3 +1,17 @@
+# coding=utf-8
+# Copyright 2018 The Google AI Language Team Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 """Run masked LM/next sentence masked_lm pre-training for BERT."""
 
 from __future__ import absolute_import
@@ -350,7 +364,7 @@ def get_masked_lm_output(bert_config, input_tensor, output_weights, positions,
     """Get loss and log probs for the masked LM."""
     # [batch_size*label_size, dim]
     input_tensor = gather_indexes(input_tensor, positions)
-
+    tf.logging.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     with tf.variable_scope("cls/predictions"):
         # We apply one more non-linear transformation before the output layer.
         # This matrix is not used after pre-training.
@@ -360,7 +374,7 @@ def get_masked_lm_output(bert_config, input_tensor, output_weights, positions,
                 units=bert_config.hidden_size,
                 activation=modeling.get_activation(bert_config.hidden_act),
                 kernel_initializer=modeling.create_initializer(
-                    bert_config.initializer_range))
+                    bert_config.initializer_range)) ##tf.layers.dense adds a single layer to  network. The second argument is the number of neurons/nodes of the layer.
             input_tensor = modeling.layer_norm(input_tensor)
 
         # The output weights are the same as the input embeddings, but there is
@@ -399,14 +413,15 @@ def gather_indexes(sequence_tensor, positions):
     batch_size = sequence_shape[0] #'tensorflow.python.framework.ops.Tensor', Tensor("strided_slice_1:0", shape=(), dtype=int32)
     seq_length = sequence_shape[1] #256
     width = sequence_shape[2] #64
-    tf.logging.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    
+
     flat_offsets = tf.reshape(
         tf.range(0, batch_size, dtype=tf.int32) * seq_length, [-1, 1]) #(?, 1)
     flat_positions = tf.reshape(positions + flat_offsets, [-1]) #(?,)
     flat_sequence_tensor = tf.reshape(sequence_tensor,
                                       [batch_size * seq_length, width])
     output_tensor = tf.gather(flat_sequence_tensor, flat_positions)#Gather slices from params axis axis according to indices.
+    ##!for seq in tf.range(0, batch_size, dtype=tf.int32):
+                ## output_tensor = tf.gather(sequence_tensor[seq], positions)
     return output_tensor 
 
 
