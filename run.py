@@ -383,10 +383,10 @@ def get_masked_lm_output(bert_config, input_tensor, output_weights, positions,
             "output_bias",
             shape=[output_weights.shape[0]],
             initializer=tf.zeros_initializer())
-        logits = tf.matmul(input_tensor, output_weights, transpose_b=True)
+        logits = tf.matmul(input_tensor, output_weights, transpose_b=True) #values are not probs (sum>1)
         logits = tf.nn.bias_add(logits, output_bias)
         # logits, (bs*label_size, vocab_size)
-        log_probs = tf.nn.log_softmax(logits, -1)#-1 indicates the last dimension.
+        log_probs = tf.nn.log_softmax(logits, -1)#log to compute log liklihood (Eq. 8). -1 indicates the last dimension.
 
         label_ids = tf.reshape(label_ids, [-1]) #shape of [-1] flattens into 1-D
         label_weights = tf.reshape(label_weights, [-1])
@@ -399,8 +399,8 @@ def get_masked_lm_output(bert_config, input_tensor, output_weights, positions,
         # tensor has a value of 1.0 for every real prediction and 0.0 for the
         # padding predictions.
         per_example_loss = -tf.reduce_sum(
-            log_probs * one_hot_labels, axis=[-1])
-        numerator = tf.reduce_sum(label_weights * per_example_loss)
+            log_probs * one_hot_labels, axis=[-1]) #loss per each masked position in the seq?
+        numerator = tf.reduce_sum(label_weights * per_example_loss) #loss over the the sequence?
         denominator = tf.reduce_sum(label_weights) + 1e-5
         loss = numerator / denominator
 
