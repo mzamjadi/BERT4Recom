@@ -270,7 +270,7 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
              model.get_sequence_output(),
              model.get_embedding_table(), masked_lm_positions, masked_lm_ids,
              masked_lm_weights)
-
+        tf.logging.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         total_loss = masked_lm_loss
 
         tvars = tf.trainable_variables()
@@ -283,7 +283,7 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
                  tvars, init_checkpoint)
             if use_tpu:
 
-                def tpu_scaffold():
+                    def tpu_scaffold():#Structure to create or gather pieces commonly needed to train a model.
                     tf.train.init_from_checkpoint(init_checkpoint,
                                                   assignment_map)
                     return tf.train.Scaffold()
@@ -304,13 +304,13 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
         if mode == tf.estimator.ModeKeys.TRAIN:
             train_op = optimization.create_optimizer(total_loss, learning_rate,
                                                      num_train_steps,
-                                                     num_warmup_steps, use_tpu)
+                                                     num_warmup_steps, use_tpu) #Creates an optimizer training op.
 
             output_spec = tf.estimator.EstimatorSpec(
                 mode=mode,
                 loss=total_loss,
                 train_op=train_op,
-                scaffold=scaffold_fn)
+                scaffold=scaffold_fn) #Ops and objects returned from a model_fn and passed to an Estimator
         elif mode == tf.estimator.ModeKeys.EVAL:
 
             def metric_fn(masked_lm_example_loss, masked_lm_log_probs,
@@ -349,7 +349,7 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
                 mode=mode,
                 loss=total_loss,
                 eval_metric_ops=eval_metrics,
-                scaffold=scaffold_fn)
+                scaffold=scaffold_fn)#Ops and objects returned from a model_fn and passed to an Estimator
         else:
             raise ValueError("Only TRAIN and EVAL modes are supported: %s" %
                              (mode))
@@ -364,7 +364,7 @@ def get_masked_lm_output(bert_config, input_tensor, output_weights, positions,
     """Get loss and log probs for the masked LM."""
     # [batch_size*label_size, dim]
     input_tensor = gather_indexes(input_tensor, positions)
-    tf.logging.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    
     with tf.variable_scope("cls/predictions"):
         # We apply one more non-linear transformation before the output layer.
         # This matrix is not used after pre-training.
@@ -399,8 +399,8 @@ def get_masked_lm_output(bert_config, input_tensor, output_weights, positions,
         # tensor has a value of 1.0 for every real prediction and 0.0 for the
         # padding predictions.
         per_example_loss = -tf.reduce_sum(
-            log_probs * one_hot_labels, axis=[-1]) #loss per each masked position in the seq?
-        numerator = tf.reduce_sum(label_weights * per_example_loss) #loss over the the sequence?
+            log_probs * one_hot_labels, axis=[-1]) #loss per each masked position in the seq
+        numerator = tf.reduce_sum(label_weights * per_example_loss) #loss over all serialized sequence
         denominator = tf.reduce_sum(label_weights) + 1e-5
         loss = numerator / denominator
 
