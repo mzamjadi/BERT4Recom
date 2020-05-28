@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-# BERT4Rec
+# Run BERT4Rec as benchmark on amazon-book dataset.
 
-
-## Usage
 
 **Requirements**
 
@@ -12,10 +9,10 @@
 
 **Run**
 
-For simplicity, here we take ml-1m as an example:
+We run amazon as an example:
 
 ``` bash
-./run_ml-1m.sh
+./run_amazon.sh
 ```
 include two part command:
 generated masked training data
@@ -67,7 +64,7 @@ json in `bert_train` like `bert_config_ml-1m_64.json`
   "num_attention_heads": 2,
   "num_hidden_layers": 2,
   "type_vocab_size": 2,
-  "vocab_size": 3420
+  "vocab_size": 24919
 }
 ```
 
@@ -95,4 +92,4 @@ json in `bert_train` like `bert_config_ml-1m_64.json`
 =======
 # BERT4Recom
 BERT for sequential recommendation system in Tensor Flow.
->>>>>>> 1d74e722a166fe072f09ce559a738e20d3ff1405
+
