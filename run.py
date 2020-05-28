@@ -282,7 +282,12 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
              ) = modeling.get_assignment_map_from_checkpoint(
                  tvars, init_checkpoint)
             if use_tpu:
+<<<<<<< HEAD
                 def tpu_scaffold():#Structure to create or gather pieces commonly needed to train a model.
+=======
+
+                    def tpu_scaffold():#Structure to create or gather pieces commonly needed to train a model.
+>>>>>>> 1d74e722a166fe072f09ce559a738e20d3ff1405
                     tf.train.init_from_checkpoint(init_checkpoint,
                                                   assignment_map)
                     return tf.train.Scaffold()

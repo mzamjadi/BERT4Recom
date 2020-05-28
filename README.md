@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # BERT4Rec
 
 
@@ -91,3 +92,7 @@ json in `bert_train` like `bert_config_ml-1m_64.json`
  address = {New York, NY, USA}
 } 
 ```
+=======
+# BERT4Recom
+BERT for sequential recommendation system in Tensor Flow.
+>>>>>>> 1d74e722a166fe072f09ce559a738e20d3ff1405
