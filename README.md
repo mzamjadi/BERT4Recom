@@ -14,8 +14,8 @@ Please make sure to unzip files. We run amazon as an example:
 ``` bash
 ./run_amazon.sh
 ```
-include two part command:
-Make sure to change the directory (the first sentence in the run file) to your environment. The first part of the run file generates masked training, and test data. 
+include two part command.
+1. Make sure to change the directory (the first sentence in the run_amazon.sh file) to your environment. The first part of the run file generates masked training, and test data. The test data is the last product of user
 ``` bash
 python -u gen_data_fin.py \
     --dataset_name=${dataset_name} \
@@ -29,7 +29,7 @@ python -u gen_data_fin.py \
     --pool_size=${pool_size} \
 ```
 
-The second part train the model. The modeling part exists in the function model_fn_builder in the run.py file which uses some of the functions in the modeling.py. In the run file, we also have input_fn_builder function which reads data from the train.tfrecord and test.tfrecord files created before. Optimization file maily models a convoluted version of the Adam optimizer for training the NN. bert_train file includes different configurations for the datasets used in Bert4Rec (not necessary for us). Modeling.py incorporates the structure of the transformers.
+The second part train the model. The modeling part exists in the function model_fn_builder in the run.py file which uses some of the functions in the modeling.py. In the run file, we also have input_fn_builder function which reads data from the train.tfrecord and test.tfrecord files created before. Optimization file maily models a convoluted version of the Adam optimizer for training the NN. bert_config_amazon2BERT_64.json file includes some configurations for the amazon datasets. Modeling.py incorporates the structure of the transformers.
 ``` bash
 CUDA_VISIBLE_DEVICES=0 python -u run.py \
     --train_input_file=./data/${dataset_name}${signature}.train.tfrecord \
